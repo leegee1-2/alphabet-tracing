@@ -221,22 +221,9 @@
     box-shadow: 0 6px 0 var(--leaf-dark);
   }
   #startScreen .small { color: var(--ink); font-size: 1rem; opacity: 0.8; }
-
-  /* Portrait message: shown only when the iPad is held upright */
-  #rotate { display: none; }
-  @media (orientation: portrait) {
-    #rotate {
-      display: flex; position: fixed; inset: 0; z-index: 1000;
-      flex-direction: column; align-items: center; justify-content: center;
-      background: linear-gradient(180deg, var(--sky) 0%, #E6F4EE 58%, var(--grass) 58%, var(--grass-dark) 100%);
-      font-size: 2rem; text-align: center; padding: 2rem; color: var(--ink);
-    }
-    #rotate::before { content: "🐻"; font-size: 4rem; margin-bottom: 12px; }
-  }
 </style>
 </head>
 <body>
-<div id="rotate">Please turn your iPad sideways</div>
 <div id="startScreen">
   <span class="big">🐻 Tap to start</span>
   <span class="small">Let's trace some letters!</span>
