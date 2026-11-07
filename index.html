@@ -158,8 +158,25 @@
   <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ffffff">
 <link rel="apple-touch-icon" href="icon-192.png">
+  <style>
+  #startScreen {
+    position: fixed; inset: 0; background: #fff; z-index: 999;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; cursor: pointer;
+  }
+  #rotate { display: none; }
+  @media (orientation: portrait) {
+    #rotate {
+      display: flex; position: fixed; inset: 0; background: #fff; z-index: 1000;
+      align-items: center; justify-content: center;
+      font-size: 2rem; text-align: center; padding: 2rem;
+    }
+  }
+</style>
 </head>
 <body>
+  <div id="rotate">Please turn your iPad sideways</div>
+<div id="startScreen">Tap to start</div>
 <main class="card">
   <header>
     <div class="title">
@@ -451,6 +468,20 @@
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js");
   }
+</script>
+  <script>
+  const ding = new Audio("ding.mp3");
+
+  function playDing() {
+    ding.currentTime = 0;
+    ding.play();
+  }
+
+  const startScreen = document.getElementById("startScreen");
+  startScreen.addEventListener("click", () => {
+    ding.play().then(() => { ding.pause(); ding.currentTime = 0; }).catch(() => {});
+    startScreen.remove();
+  }, { once: true });
 </script>
 </body>
 </html>
