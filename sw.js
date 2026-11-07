@@ -1,10 +1,11 @@
-const CACHE = "alphabet-tracing-v2";
+const CACHE = "alphabet-tracing-v3";
 const FILES = [
   "./",
   "./index.html",
   "./manifest.json",
   "./icon-192.png",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./ding.mp3"
 ];
 
 self.addEventListener("install", e => {
