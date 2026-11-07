@@ -1,4 +1,4 @@
-const CACHE = "alphabet-tracing-v3";
+const CACHE = "alphabet-tracing-v4";
 const FILES = [
   "./",
   "./index.html",
