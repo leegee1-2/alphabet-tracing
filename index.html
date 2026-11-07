@@ -5,44 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Trace the Letters</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#CFEAF2">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #EEF5EF;
-    --paper: #FFFFFF;
-    --ink: #2F4A3A;
+    --sky: #CFEAF2;
+    --cloud: #FFFFFF;
+    --grass: #C9E29C;
+    --grass-dark: #B5D984;
+    --hill: #A8CF7E;
+    --paper: rgba(255, 255, 255, 0.94);
+    --ink: #3E5A46;
     --soft: #6E8B78;
-    --leaf: #A8D5B5;
-    --trace: #3F7A57;
-    --guide: #D3E5D8;
-    --guide-edge: #9BBBA5;
-    --good: #F7E3A1;
+    --leaf: #B6DDA6;
+    --leaf-dark: #8FC782;
+    --peach: #F7B48A;
+    --trace: #8A5F45;
+    --guide: #FFD27D;
+    --guide-edge: #E0A24E;
+    --good: #FFD27D;
+    --dot: #E6EDD4;
     color-scheme: light;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; min-height: 100%; }
   body {
     font-family: "Fredoka", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-    background: var(--bg);
     color: var(--ink);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px calc(env(safe-area-inset-bottom, 0px) + 8px);
+    padding: calc(env(safe-area-inset-top, 0px) + 10px) 12px calc(env(safe-area-inset-bottom, 0px) + 8px);
+    background:
+      radial-gradient(ellipse 45% 22% at 8% 100%, var(--hill) 0 70%, transparent 72%),
+      radial-gradient(ellipse 60% 28% at 100% 92%, var(--hill) 0 70%, transparent 72%),
+      radial-gradient(ellipse 40% 12% at 30% 18%, var(--cloud) 0 60%, transparent 62%),
+      radial-gradient(ellipse 30% 10% at 80% 10%, var(--cloud) 0 60%, transparent 62%),
+      linear-gradient(180deg, var(--sky) 0%, #E6F4EE 58%, var(--grass) 58%, var(--grass-dark) 100%);
+    background-attachment: fixed;
   }
   .card {
     width: min(440px, 100%);
     background: var(--paper);
-    border-radius: 28px;
-    padding: 14px 20px 10px;
+    border-radius: 30px;
+    padding: 14px 20px 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    box-shadow: 0 8px 0 rgba(120, 160, 120, 0.25), 0 14px 30px rgba(60, 100, 80, 0.15);
   }
   header {
     width: 100%;
@@ -52,29 +67,41 @@
     gap: 12px;
   }
   .title { display: flex; align-items: center; gap: 10px; }
-  .animal { font-size: 40px; line-height: 1; transition: transform 0.4s ease; }
+  .animal {
+    font-size: 40px; line-height: 1;
+    background: #FFF4D6;
+    border-radius: 50%;
+    width: 58px; height: 58px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.4s ease;
+  }
   .animal.bob { animation: bob 2.6s ease-in-out infinite; }
   .name { font-size: 18px; margin: 0; color: var(--soft); font-weight: 500; }
-  .name b { color: var(--ink); font-weight: 600; }
+  .name b { color: var(--ink); font-weight: 600; font-size: 22px; }
   .segmented {
     display: inline-flex;
-    background: var(--bg);
+    background: #EEF6EC;
     border-radius: 999px;
     padding: 4px;
   }
   .segmented button {
     background: transparent;
+    color: var(--ink);
     padding: 6px 14px;
     font-size: 15px;
   }
-  .segmented button[aria-pressed="true"] { background: var(--paper); box-shadow: 0 1px 3px rgba(47,74,58,0.15); }
+  .segmented button[aria-pressed="true"] {
+    background: var(--paper);
+    box-shadow: 0 1px 4px rgba(47, 74, 58, 0.18);
+  }
 
   .board {
     width: min(300px, 100%, 44vh);
     aspect-ratio: 1 / 1;
     position: relative;
-    border-radius: 22px;
-    background: var(--bg);
+    border-radius: 24px;
+    background: #FFFDF6;
+    border: 4px solid #F3EBD3;
     overflow: hidden;
   }
   canvas {
@@ -87,8 +114,8 @@
   }
   .meter {
     width: min(300px, 100%);
-    height: 10px;
-    background: var(--bg);
+    height: 12px;
+    background: #F1E6CF;
     border-radius: 999px;
     overflow: hidden;
   }
@@ -104,6 +131,7 @@
     font-weight: 500;
     margin: 0;
     text-align: center;
+    color: var(--ink);
     transition: opacity 0.3s ease;
   }
   .controls {
@@ -122,30 +150,39 @@
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
+    box-shadow: 0 3px 0 var(--leaf-dark);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
   button:hover { transform: translateY(-1px); }
+  button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--leaf-dark); }
   button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
-  button.ghost { background: transparent; border: 2px solid var(--leaf); }
+  button.ghost {
+    background: #FFFFFF;
+    border: 2px solid var(--leaf);
+    box-shadow: none;
+  }
+  button.ghost:active { transform: translateY(1px); }
+  #next { background: var(--peach); box-shadow: 0 3px 0 #E3956A; }
+  #next:active { box-shadow: 0 1px 0 #E3956A; }
   .progress {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 5px;
+    gap: 6px;
     max-width: 380px;
   }
   .progress i {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--guide);
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--dot);
     display: block;
-    transition: background 0.4s ease;
+    transition: background 0.4s ease, transform 0.3s ease;
   }
-  .progress i.done { background: var(--leaf); }
-  .progress i.on { background: var(--ink); }
+  .progress i.done { background: var(--guide); }
+  .progress i.on { background: var(--peach); transform: scale(1.3); }
   .celebrate { animation: pop 0.7s ease; }
   .credit {
     font-size: 0.6rem;
-    color: #7a8f80;
+    color: #6E8B78;
     text-align: center;
     margin: 4px 0 0;
     line-height: 1.3;
@@ -166,24 +203,44 @@
 
   /* Tap to start screen */
   #startScreen {
-    position: fixed; inset: 0; background: #fff; z-index: 999;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2.5rem; cursor: pointer;
+    position: fixed; inset: 0; z-index: 999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px;
+    background:
+      radial-gradient(ellipse 45% 22% at 8% 100%, var(--hill) 0 70%, transparent 72%),
+      radial-gradient(ellipse 60% 28% at 100% 92%, var(--hill) 0 70%, transparent 72%),
+      linear-gradient(180deg, var(--sky) 0%, #E6F4EE 58%, var(--grass) 58%, var(--grass-dark) 100%);
+    cursor: pointer;
   }
+  #startScreen .big {
+    font-size: 2.4rem;
+    color: var(--ink);
+    background: #FFFFFF;
+    padding: 18px 40px;
+    border-radius: 999px;
+    box-shadow: 0 6px 0 var(--leaf-dark);
+  }
+  #startScreen .small { color: var(--ink); font-size: 1rem; opacity: 0.8; }
+
   /* Portrait message: shown only when the iPad is held upright */
   #rotate { display: none; }
   @media (orientation: portrait) {
     #rotate {
-      display: flex; position: fixed; inset: 0; background: #fff; z-index: 1000;
-      align-items: center; justify-content: center;
-      font-size: 2rem; text-align: center; padding: 2rem;
+      display: flex; position: fixed; inset: 0; z-index: 1000;
+      flex-direction: column; align-items: center; justify-content: center;
+      background: linear-gradient(180deg, var(--sky) 0%, #E6F4EE 58%, var(--grass) 58%, var(--grass-dark) 100%);
+      font-size: 2rem; text-align: center; padding: 2rem; color: var(--ink);
     }
+    #rotate::before { content: "🐻"; font-size: 4rem; margin-bottom: 12px; }
   }
 </style>
 </head>
 <body>
 <div id="rotate">Please turn your iPad sideways</div>
-<div id="startScreen">Tap to start</div>
+<div id="startScreen">
+  <span class="big">🐻 Tap to start</span>
+  <span class="small">Let's trace some letters!</span>
+</div>
 
 <main class="card">
   <header>
@@ -206,7 +263,6 @@
 
   <div class="controls">
     <button class="ghost" id="clear">Erase</button>
-    <button class="ghost" id="show">Show me</button>
     <button class="ghost" id="prev">← Previous</button>
     <button id="next">Next letter →</button>
   </div>
@@ -218,32 +274,32 @@
 
 <script>
   const LETTERS = [
-    { l: "A", w: "ant",       s: "ah",   a: "🐜" },
-    { l: "B", w: "bear",      s: "buh",  a: "🐻" },
-    { l: "C", w: "cat",       s: "kuh",  a: "🐱" },
-    { l: "D", w: "duck",      s: "duh",  a: "🦆" },
-    { l: "E", w: "elephant",  s: "eh",   a: "🐘" },
-    { l: "F", w: "fox",       s: "fff",  a: "🦊" },
-    { l: "G", w: "goat",      s: "guh",  a: "🐐" },
-    { l: "H", w: "horse",     s: "huh",  a: "🐴" },
-    { l: "I", w: "iguana",    s: "ih",   a: "🦎" },
-    { l: "J", w: "jellyfish", s: "juh",  a: "🪼" },
-    { l: "K", w: "koala",     s: "kuh",  a: "🐨" },
-    { l: "L", w: "lion",      s: "lll",  a: "🦁" },
-    { l: "M", w: "monkey",    s: "mmm",  a: "🐒" },
-    { l: "N", w: "newt",      s: "nnn",  a: "🦎" },
-    { l: "O", w: "octopus",   s: "ah",   a: "🐙" },
-    { l: "P", w: "penguin",   s: "puh",  a: "🐧" },
-    { l: "Q", w: "quail",     s: "kwuh", a: "🐦" },
-    { l: "R", w: "rabbit",    s: "rrr",  a: "🐰" },
-    { l: "S", w: "snake",     s: "sss",  a: "🐍" },
-    { l: "T", w: "turtle",    s: "tuh",  a: "🐢" },
-    { l: "U", w: "unicorn",   s: "uh",   a: "🦄" },
-    { l: "V", w: "vole",      s: "vvv",  a: "🐭" },
-    { l: "W", w: "walrus",    s: "wuh",  a: "🦭" },
-    { l: "X", w: "ox",        s: "ks",   a: "🐂" },
-    { l: "Y", w: "yak",       s: "yuh",  a: "🐃" },
-    { l: "Z", w: "zebra",     s: "zzz",  a: "🦓" }
+    { l: "A", w: "ant",       a: "🐜" },
+    { l: "B", w: "bear",      a: "🐻" },
+    { l: "C", w: "cat",       a: "🐱" },
+    { l: "D", w: "duck",      a: "🦆" },
+    { l: "E", w: "elephant",  a: "🐘" },
+    { l: "F", w: "fox",       a: "🦊" },
+    { l: "G", w: "goat",      a: "🐐" },
+    { l: "H", w: "horse",     a: "🐴" },
+    { l: "I", w: "iguana",    a: "🦎" },
+    { l: "J", w: "jellyfish", a: "🪼" },
+    { l: "K", w: "koala",     a: "🐨" },
+    { l: "L", w: "lion",      a: "🦁" },
+    { l: "M", w: "monkey",    a: "🐒" },
+    { l: "N", w: "newt",      a: "🦎" },
+    { l: "O", w: "octopus",   a: "🐙" },
+    { l: "P", w: "penguin",   a: "🐧" },
+    { l: "Q", w: "quail",     a: "🐦" },
+    { l: "R", w: "rabbit",    a: "🐰" },
+    { l: "S", w: "snake",     a: "🐍" },
+    { l: "T", w: "turtle",    a: "🐢" },
+    { l: "U", w: "unicorn",   a: "🦄" },
+    { l: "V", w: "vole",      a: "🐭" },
+    { l: "W", w: "walrus",    a: "🦭" },
+    { l: "X", w: "ox",        a: "🐂" },
+    { l: "Y", w: "yak",       a: "🐃" },
+    { l: "Z", w: "zebra",     a: "🦓" }
   ];
 
   const S = 320;
@@ -261,20 +317,30 @@
   userMask.width = S; userMask.height = S;
   const uctx = userMask.getContext("2d", { willReadFrequently: true });
 
-  // Sound effect
-  const ding = new Audio("ding.mp3");
-  ding.preload = "auto";
-  ding.addEventListener("error", () => setMessage("Sound file missing. Check that ding.mp3 is an MP3."));
-  function playDing() {
-    ding.currentTime = 0;
-    ding.play().catch(() => {});
+  // Background music: starts when the child taps "Tap to start", then loops quietly
+  const music = new Audio("ding.mp3");
+  music.loop = true;
+  music.volume = 0.3;
+  music.preload = "auto";
+  music.addEventListener("error", () => setMessage("Sound file missing. Check that ding.mp3 is an MP3."));
+
+  // Completion sound: its own player, so it doesn't interrupt the music
+  const chime = new Audio("ding.mp3");
+  chime.preload = "auto";
+  chime.volume = 1;
+  function playChime() {
+    chime.currentTime = 0;
+    chime.play().catch(() => {});
   }
 
   let index = 0, upper = true, guideCells = [], drawing = false, last = null, done = new Set(), inks = 0;
-  let revealT = null;
 
   function currentChar() {
     return upper ? LETTERS[index].l : LETTERS[index].l.toLowerCase();
+  }
+
+  function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
 
   function buildGuideCells() {
@@ -292,36 +358,27 @@
     guideCells = cells;
   }
 
-  function drawBase(revealFraction = 1) {
+  function drawBase() {
     ctx.clearRect(0, 0, S, S);
-    ctx.fillStyle = "#FFFFFF";
+    ctx.fillStyle = "#FFFDF6";
     ctx.fillRect(0, 0, S, S);
     ctx.save();
     ctx.font = FONT;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     const x = S / 2, y = S / 2 + 6;
-    if (revealFraction < 1) {
-      ctx.beginPath();
-      ctx.rect(0, 0, S * revealFraction, S);
-      ctx.clip();
-    }
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--guide").trim();
+    ctx.fillStyle = cssVar("--guide");
     ctx.fillText(currentChar(), x, y);
     ctx.setLineDash([9, 9]);
     ctx.lineWidth = 3;
-    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--guide-edge").trim();
+    ctx.strokeStyle = cssVar("--guide-edge");
     ctx.strokeText(currentChar(), x, y);
     ctx.restore();
   }
 
-  function redrawInk() {
+  function render() {
+    drawBase();
     ctx.drawImage(userMask, 0, 0, S, S);
-  }
-
-  function render(revealFraction = 1) {
-    drawBase(revealFraction);
-    redrawInk();
   }
 
   function coverage() {
@@ -336,16 +393,6 @@
     const pct = Math.round(Math.min(share / PASS, 1) * 100);
     $("meterFill").style.width = pct + "%";
     $("meterFill").style.background = share >= PASS ? "var(--good)" : "var(--leaf)";
-  }
-
-  function say(text) {
-    if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
-    try {
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.8; u.pitch = 1.1;
-      speechSynthesis.speak(u);
-    } catch (e) {}
   }
 
   function setMessage(text) { $("message").textContent = text; }
@@ -380,7 +427,7 @@
     const pts = [last, { x, y }];
     for (const c of [ctx, uctx]) {
       c.lineCap = "round"; c.lineJoin = "round"; c.lineWidth = BRUSH;
-      c.strokeStyle = c === ctx ? getComputedStyle(document.documentElement).getPropertyValue("--trace").trim() : "#000";
+      c.strokeStyle = c === ctx ? cssVar("--trace") : "#000";
       c.beginPath(); c.moveTo(pts[0].x, pts[0].y); c.lineTo(pts[1].x, pts[1].y); c.stroke();
     }
     last = { x, y };
@@ -392,7 +439,6 @@
   }
 
   canvas.addEventListener("pointerdown", e => {
-    if (revealT) return;
     drawing = true;
     canvas.setPointerCapture(e.pointerId);
     last = pointerPos(e);
@@ -423,7 +469,7 @@
     $("animal").classList.remove("celebrate");
     void $("animal").offsetWidth;
     $("animal").classList.add("celebrate");
-    playDing();
+    playChime();
   }
 
   $("clear").addEventListener("click", () => {
@@ -432,23 +478,6 @@
     updateMeter(0);
     setMessage("Let's try again.");
     render();
-  });
-
-  $("show").addEventListener("click", () => {
-    if (revealT) return;
-    uctx.clearRect(0, 0, S, S);
-    inks = 0;
-    updateMeter(0);
-    const start = performance.now(), dur = 1400;
-    const step = now => {
-      const t = Math.min((now - start) / dur, 1);
-      render(t);
-      if (t < 1) revealT = requestAnimationFrame(step);
-      else { revealT = null; render(1); }
-    };
-    setMessage("Watch the letter, then try it yourself.");
-    say(`${currentChar()}. ${LETTERS[index].w}.`);
-    revealT = requestAnimationFrame(step);
   });
 
   $("next").addEventListener("click", () => setLetter(index + 1));
@@ -468,10 +497,11 @@
     if (e.key === "ArrowLeft") setLetter(index - 1);
   });
 
-  // Tap to start: unlocks sound on iPad. Runs inside a tap, so iOS allows it.
+  // Tap to start: this tap unlocks audio on iPad, and the music starts right away
   const startScreen = $("startScreen");
   startScreen.addEventListener("click", () => {
-    ding.play().then(() => { ding.pause(); ding.currentTime = 0; }).catch(() => {});
+    music.play().catch(() => {});
+    chime.load();
     startScreen.remove();
   }, { once: true });
 
