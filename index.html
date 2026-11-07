@@ -155,6 +155,9 @@
     .meter > div, .progress i, .message { transition: none; }
   }
 </style>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
+<link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 <main class="card">
@@ -444,5 +447,10 @@
   ready.catch(() => {}).finally(() => setLetter(0));
 </script>
   <p>Music: "Morning Dew" by Migfus20 on freesound.org, CC BY 4.0</p>
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
+  }
+</script>
 </body>
 </html>
