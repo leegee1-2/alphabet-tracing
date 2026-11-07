@@ -1,4 +1,4 @@
-const CACHE = "alphabet-tracing-v4";
+const CACHE = "alphabet-tracing-v5";
 const FILES = [
   "./",
   "./index.html",
@@ -9,9 +9,27 @@ const FILES = [
 ];
 
 self.addEventListener("install", e => {
+  self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
 });
 
+self.addEventListener("activate", e => {
+  e.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
+
+// Try the website first so updates show up; use the saved copy only when offline
 self.addEventListener("fetch", e => {
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+  e.respondWith(
+    fetch(e.request)
+      .then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
+  );
 });
